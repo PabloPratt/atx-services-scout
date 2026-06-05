@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ServiceScout</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <img src="assets/hero-services.png" alt="Local service professionals preparing for household and auto jobs" />
+      <div class="hero__shade"></div>
+      <nav class="topbar" aria-label="Primary">
+        <a class="brand" href="#">ServiceScout</a>
+        <div class="topbar__actions">
+          <button id="exportBtn" class="button button--ghost" type="button">Export data</button>
+          <a class="button" href="#outreach">Outreach queue</a>
+        </div>
+      </nav>
+      <section class="hero__content">
+        <p class="eyebrow">Local service price intelligence</p>
+        <h1>Compare everyday service providers before you call.</h1>
+        <p>
+          Start with mechanics, cleaning, lawn care, plumbers, and electricians.
+          Track prices, reviews, chains, independents, and quote requests in one place.
+        </p>
+      </section>
+    </header>
+
+    <main>
+      <section class="workspace" aria-label="Service provider comparison workspace">
+        <aside class="filters" aria-label="Filters">
+          <label>
+            Search
+            <input id="searchInput" type="search" placeholder="Provider, service, city" />
+          </label>
+
+          <label>
+            Category
+            <select id="categoryFilter"></select>
+          </label>
+
+          <label>
+            Provider type
+            <select id="typeFilter">
+              <option value="all">All</option>
+              <option value="chain">Chains</option>
+              <option value="local">Local independents</option>
+            </select>
+          </label>
+
+          <label>
+            Price status
+            <select id="priceStatusFilter">
+              <option value="all">All</option>
+              <option value="known">Known price</option>
+              <option value="missing">Needs quote</option>
+            </select>
+          </label>
+
+          <label>
+            Max starting price
+            <input id="maxPriceFilter" type="range" min="50" max="900" value="900" step="25" />
+            <output id="maxPriceOutput">$900+</output>
+          </label>
+
+          <label>
+            Minimum rating
+            <input id="minRatingFilter" type="range" min="0" max="5" value="0" step="0.1" />
+            <output id="minRatingOutput">Any</output>
+          </label>
+        </aside>
+
+        <section class="results">
+          <div class="summary" aria-live="polite">
+            <div>
+              <span id="resultCount">0</span>
+              <small>matching providers</small>
+            </div>
+            <div>
+              <span id="knownPriceCount">0</span>
+              <small>known prices</small>
+            </div>
+            <div>
+              <span id="quoteCount">0</span>
+              <small>quotes needed</small>
+            </div>
+          </div>
+
+          <div id="providerGrid" class="provider-grid"></div>
+        </section>
+      </section>
+
+      <section class="editor" aria-label="Manual price update">
+        <div>
+          <p class="eyebrow">Update loop</p>
+          <h2>Add prices as companies reply</h2>
+          <p>
+            When a provider emails back, enter the price and source note here.
+            Updates are saved locally in this browser and can be exported as JSON.
+          </p>
+        </div>
+        <form id="priceForm" class="price-form">
+          <label>
+            Provider
+            <select id="providerSelect"></select>
+          </label>
+          <label>
+            Starting price
+            <input id="priceInput" type="number" min="0" step="1" placeholder="175" required />
+          </label>
+          <label>
+            Source note
+            <input id="sourceInput" type="text" placeholder="Email quote, June 5 2026" required />
+          </label>
+          <button class="button" type="submit">Save price</button>
+        </form>
+      </section>
+
+      <section id="outreach" class="outreach" aria-label="Missing price outreach queue">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Agent workflow</p>
+            <h2>Companies to email for pricing</h2>
+          </div>
+          <button id="copyOutreachBtn" class="button button--secondary" type="button">Copy outreach batch</button>
+        </div>
+        <div id="outreachList" class="outreach-list"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>ServiceScout stores local edits in your browser. Connect a places/reviews API and email provider to make this fully live.</p>
+    </footer>
+
+    <script src="data/providers.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
