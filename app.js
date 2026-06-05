@@ -127,7 +127,7 @@ function providerCard(provider) {
 function buildMailto(provider) {
   const subject = encodeURIComponent(`Price request for ${provider.service}`);
   const body = encodeURIComponent(
-    `Hello ${provider.name},\n\nI'm comparing local service providers for ServiceScout. Can you share your starting price or typical price range for ${provider.service} in my area?\n\nHelpful details:\n- Service category: ${provider.category}\n- City/ZIP:\n- Standard appointment, not emergency unless noted\n\nThank you.`
+    `Hello ${provider.name},\n\nI'm comparing local service providers for ATX Services Scout. Can you share your starting price or typical price range for ${provider.service} in my area?\n\nHelpful details:\n- Service category: ${provider.category}\n- City/ZIP:\n- Standard appointment, not emergency unless noted\n\nThank you.`
   );
   return `mailto:${provider.email || ""}?subject=${subject}&body=${body}`;
 }
@@ -166,7 +166,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `service-scout-data-${new Date().toISOString().slice(0, 10)}.json`;
+  link.download = `atx-services-scout-data-${new Date().toISOString().slice(0, 10)}.json`;
   link.click();
   URL.revokeObjectURL(url);
 }

@@ -1,6 +1,6 @@
-# ServiceScout Memory
+# ATX Services Scout Memory
 
-Project name: ServiceScout
+Project name: ATX Services Scout
 
 Scope for version 1:
 

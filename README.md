@@ -1,6 +1,6 @@
-# ServiceScout
+# ATX Services Scout
 
-ServiceScout is a local-services comparison site for everyday providers: mechanics, cleaners, lawn care, plumbers, and electricians.
+ATX Services Scout is a local-services comparison site for everyday providers: mechanics, cleaners, lawn care, plumbers, and electricians.
 
 The first version is static and deployable on Vercel or GitHub Pages. It supports:
 

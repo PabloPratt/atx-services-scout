@@ -31,7 +31,7 @@ Subject: Price request for {{service}}
 
 Hello {{provider_name}},
 
-I'm comparing local service providers for ServiceScout. Can you share your starting price or typical price range for {{service}} in {{market}}?
+I'm comparing local service providers for ATX Services Scout. Can you share your starting price or typical price range for {{service}} in {{market}}?
 
 Helpful details:
 
