@@ -5,9 +5,12 @@ const state = {
   providers: mergeLocalUpdates(baseProviders),
   filters: {
     search: "",
+    address: "",
     category: "all",
     type: "all",
     priceStatus: "all",
+    hideQuotes: false,
+    radius: 50,
     maxPrice: 900,
     minRating: 0
   }
@@ -15,13 +18,18 @@ const state = {
 
 const els = {
   searchInput: document.querySelector("#searchInput"),
+  addressInput: document.querySelector("#addressInput"),
   categoryFilter: document.querySelector("#categoryFilter"),
   typeFilter: document.querySelector("#typeFilter"),
   priceStatusFilter: document.querySelector("#priceStatusFilter"),
+  hideQuotesFilter: document.querySelector("#hideQuotesFilter"),
+  radiusFilter: document.querySelector("#radiusFilter"),
+  radiusOutput: document.querySelector("#radiusOutput"),
   maxPriceFilter: document.querySelector("#maxPriceFilter"),
   maxPriceOutput: document.querySelector("#maxPriceOutput"),
   minRatingFilter: document.querySelector("#minRatingFilter"),
   minRatingOutput: document.querySelector("#minRatingOutput"),
+  locationNotice: document.querySelector("#locationNotice"),
   resultCount: document.querySelector("#resultCount"),
   knownPriceCount: document.querySelector("#knownPriceCount"),
   quoteCount: document.querySelector("#quoteCount"),
@@ -79,16 +87,20 @@ function matchesFilters(provider) {
     provider.category,
     provider.market,
     provider.service,
+    ...(provider.serviceAliases || []),
     provider.sourceNote
   ].join(" ").toLowerCase();
   const hasPrice = provider.startingPrice !== null && provider.startingPrice !== undefined;
   const hasRating = provider.rating !== null && provider.rating !== undefined;
+  const hasDistance = provider.distanceMiles !== null && provider.distanceMiles !== undefined;
 
   if (state.filters.search && !searchHaystack.includes(state.filters.search.toLowerCase())) return false;
   if (state.filters.category !== "all" && provider.category !== state.filters.category) return false;
   if (state.filters.type !== "all" && provider.type !== state.filters.type) return false;
+  if (state.filters.hideQuotes && !hasPrice) return false;
   if (state.filters.priceStatus === "known" && !hasPrice) return false;
   if (state.filters.priceStatus === "missing" && hasPrice) return false;
+  if (state.filters.address && hasDistance && provider.distanceMiles > state.filters.radius) return false;
   if (hasPrice && provider.startingPrice > state.filters.maxPrice) return false;
   if (state.filters.minRating > 0 && (!hasRating || provider.rating < state.filters.minRating)) return false;
   return true;
@@ -110,6 +122,7 @@ function providerCard(provider) {
         <span class="${typeClass}">${provider.type}</span>
       </header>
       <div class="meta">${provider.service}</div>
+      <div class="meta">${provider.distanceMiles ? `${provider.distanceMiles.toFixed(1)} miles away` : "Distance pending"}</div>
       <div class="price">
         ${formatPrice(provider)}
         <small>${provider.sourceNote}</small>
@@ -136,9 +149,12 @@ function render() {
   const visible = state.providers.filter(matchesFilters);
   const missing = visible.filter((provider) => provider.startingPrice === null || provider.startingPrice === undefined);
   const known = visible.length - missing.length;
+  const hasAnyDistance = state.providers.some((provider) => provider.distanceMiles !== null && provider.distanceMiles !== undefined);
 
+  els.radiusOutput.textContent = `${state.filters.radius} mi`;
   els.maxPriceOutput.textContent = state.filters.maxPrice >= 900 ? "$900+" : `$${state.filters.maxPrice}`;
   els.minRatingOutput.textContent = state.filters.minRating === 0 ? "Any" : `${state.filters.minRating.toFixed(1)}+`;
+  els.locationNotice.hidden = !state.filters.address || hasAnyDistance;
   els.resultCount.textContent = visible.length;
   els.knownPriceCount.textContent = known;
   els.quoteCount.textContent = missing.length;
@@ -182,6 +198,10 @@ function bindEvents() {
     state.filters.search = event.target.value;
     render();
   });
+  els.addressInput.addEventListener("input", (event) => {
+    state.filters.address = event.target.value;
+    render();
+  });
   els.categoryFilter.addEventListener("change", (event) => {
     state.filters.category = event.target.value;
     render();
@@ -192,6 +212,14 @@ function bindEvents() {
   });
   els.priceStatusFilter.addEventListener("change", (event) => {
     state.filters.priceStatus = event.target.value;
+    render();
+  });
+  els.hideQuotesFilter.addEventListener("change", (event) => {
+    state.filters.hideQuotes = event.target.checked;
+    render();
+  });
+  els.radiusFilter.addEventListener("input", (event) => {
+    state.filters.radius = Number(event.target.value);
     render();
   });
   els.maxPriceFilter.addEventListener("input", (event) => {

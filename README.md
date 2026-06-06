@@ -46,8 +46,22 @@ Recommended ingestion sources:
 - Yelp Fusion API for review and category enrichment
 - provider official websites for published estimate/quote pages
 - manual quote email replies for actual local price ranges
+- Google Maps Distance Matrix or Mapbox Matrix API for distance from a user's address
+- OpenAI API for turning natural-language service requests into searchable categories and query terms
+- Supabase or Neon Postgres for shared provider records, quote status, and manual updates
+- Resend, Postmark, SendGrid, or Gmail API for automated price-request emails
 
 Suggested normalized fields are already in `data/providers.js`: `category`, `type`, `market`, `service`, `startingPrice`, `rating`, `reviewCount`, `sourceNote`, `sourceUrl`, `contactUrl`, and `email`.
+
+## What Needs To Be Connected
+
+To make the product fully live, provide API keys or connected accounts for:
+
+- Google Places API: finds ATX providers and returns ratings, review counts, websites, phones, and coordinates.
+- Google Maps Distance Matrix API: calculates distance from the user's address to each provider.
+- OpenAI API: interprets searches like "my sink is leaking" into plumber queries and service aliases.
+- Supabase or Neon: stores provider data, manual price updates, outreach status, and quote replies.
+- Email provider: sends price-request emails and records replies. Resend or Postmark is simplest for app mail; Gmail is better if you want the emails to come directly from your inbox.
 
 ## Email Agent Roadmap
 
