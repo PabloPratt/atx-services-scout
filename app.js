@@ -43,6 +43,19 @@ const els = {
   copyOutreachBtn: document.querySelector("#copyOutreachBtn")
 };
 
+const LOCATION_WORDS = new Set(["austin", "atx", "tx", "texas"]);
+
+function splitSearchAndLocation(value) {
+  const tokens = String(value || "").toLowerCase().match(/[a-z0-9]+/g) || [];
+  const locationTokens = tokens.filter((token) => LOCATION_WORDS.has(token) || /^78\d{3}$/.test(token));
+  const serviceTokens = tokens.filter((token) => !LOCATION_WORDS.has(token) && !/^78\d{3}$/.test(token));
+
+  return {
+    serviceQuery: serviceTokens.join(" "),
+    locationQuery: locationTokens.length ? locationTokens.join(" ") : ""
+  };
+}
+
 function mergeLocalUpdates(providers) {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   return providers.map((provider) => ({ ...provider, ...(saved[provider.id] || {}) }));
@@ -195,7 +208,12 @@ function copyOutreachBatch() {
 
 function bindEvents() {
   els.searchInput.addEventListener("input", (event) => {
-    state.filters.search = event.target.value;
+    const parsed = splitSearchAndLocation(event.target.value);
+    state.filters.search = parsed.serviceQuery;
+    if (parsed.locationQuery) {
+      state.filters.address = parsed.locationQuery;
+      els.addressInput.value = parsed.locationQuery;
+    }
     render();
   });
   els.addressInput.addEventListener("input", (event) => {
